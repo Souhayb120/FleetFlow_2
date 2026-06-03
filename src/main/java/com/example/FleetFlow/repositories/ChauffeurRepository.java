@@ -2,14 +2,20 @@ package com.example.FleetFlow.repositories;
 
 import com.example.FleetFlow.DTO.ChauffeurDTO;
 import com.example.FleetFlow.models.Chauffeur;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+import org.springframework.data.domain.Pageable;
+
 
 
 public interface ChauffeurRepository extends JpaRepository<Chauffeur, Integer> {
-    List<Chauffeur> findByIsDisponibleTrue();
-    List<Chauffeur> findByPermisTypeAndIsDisponible(String permisType, Boolean isDisponible);
 
+    Page<Chauffeur> findByIsDisponibleTrue(Pageable pageable);
 
+    Page<Chauffeur> findByPermisTypeAndIsDisponible(
+            String permisType,
+            Boolean isDisponible,
+            Pageable pageable
+    );
 }

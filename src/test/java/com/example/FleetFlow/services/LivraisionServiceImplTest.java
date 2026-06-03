@@ -19,7 +19,7 @@
     import static org.mockito.Mockito.when;
     @ExtendWith(MockitoExtension.class)
 
-    public class LivraisionServiceTest {
+    public class LivraisionServiceImplTest {
         @Mock
         private LivraisonRepository livraisonRepository;
         @Mock

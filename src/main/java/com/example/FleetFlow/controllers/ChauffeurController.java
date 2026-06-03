@@ -1,16 +1,15 @@
 package com.example.FleetFlow.controllers;
 
-
 import com.example.FleetFlow.DTO.ChauffeurDTO;
 import com.example.FleetFlow.DTO.CreateChauffeurDTO;
-
 import com.example.FleetFlow.models.Chauffeur;
 import com.example.FleetFlow.services.ChauffeurService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/chauffeurs")
@@ -20,40 +19,64 @@ public class ChauffeurController {
     private ChauffeurService chauffeurService;
 
     @PostMapping
-    public void saveChauffeur( @Valid @RequestBody CreateChauffeurDTO chauffeur){
+    public void saveChauffeur(@Valid @RequestBody CreateChauffeurDTO chauffeur){
         chauffeurService.ajouterChauffeur(chauffeur);
     }
 
     @GetMapping
-    public List<ChauffeurDTO> displayChauffeurs(){
-        return chauffeurService.displayChauffeurs();
+    public Page<ChauffeurDTO> displayChauffeurs(
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        Pageable pageable = PageRequest.of(page, size);
+        return chauffeurService.displayChauffeurs(pageable);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteChauffeur(@PathVariable  int id){
+    public void deleteChauffeur(@PathVariable int id){
         chauffeurService.deleteChauffeur(id);
     }
 
     @PutMapping("/{id}")
-    public Chauffeur updateChauffeur(@PathVariable int id,@RequestBody Chauffeur chauffeur){
-        return chauffeurService.updateChauffeur(id,chauffeur);
+    public Chauffeur updateChauffeur(
+            @PathVariable int id,
+            @RequestBody Chauffeur chauffeur
+    ){
+        return chauffeurService.updateChauffeur(id, chauffeur);
     }
 
     @GetMapping("/chaffeursDisponible")
-    public List<ChauffeurDTO> findByIsDisponible(){
-        return chauffeurService.findByDisponibility();
+    public Page<ChauffeurDTO> findByIsDisponible(
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        Pageable pageable = PageRequest.of(page, size);
+        return chauffeurService.findByDisponibility(pageable);
     }
 
-
     @GetMapping("/{permisType}")
-    public List<ChauffeurDTO> displayChauffeurs(@PathVariable String permisType ,Boolean isDisponible){
-        return chauffeurService.findByPermisTypeDisponible(permisType,isDisponible);
+    public Page<ChauffeurDTO> displayChauffeurs(
+            @PathVariable String permisType,
+            @RequestParam Boolean isDisponible,
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        Pageable pageable = PageRequest.of(page, size);
+
+        return chauffeurService.findByPermisTypeDisponible(
+                permisType,
+                isDisponible,
+                pageable
+        );
     }
 
     @GetMapping("/displayChauffeurByNom")
-    public List<String> displayChauffeursByNom(){
-        return chauffeurService.displayChauffeursByNom();
+    public Page<String> displayChauffeursByNom(
+            @RequestParam int page,
+            @RequestParam int size
+    ){
+        Pageable pageable = PageRequest.of(page, size);
+
+        return chauffeurService.displayChauffeursByNom(pageable);
     }
-
-
 }

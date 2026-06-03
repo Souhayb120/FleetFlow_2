@@ -6,10 +6,12 @@ import com.example.FleetFlow.models.Livraison;
 import com.example.FleetFlow.services.LivraisionService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequestMapping("/livraison")
@@ -21,7 +23,6 @@ public class LivraisonsController {
     @Autowired
     private LivraisionMapper livraisionMapper;
 
-
     @PostMapping
     public LivraisionDTO creatLivraision(@RequestBody @Valid LivraisionDTO dto) {
 
@@ -31,17 +32,20 @@ public class LivraisonsController {
         return livraisionMapper.toDTO(saved);
     }
 
-
     @PutMapping("/{id}/assign")
     public LivraisionDTO assign(
             @PathVariable long id,
             @RequestParam long chauffeurId,
             @RequestParam long vehiculeId) {
 
-        Livraison livraison = livraisionServices.assigner(id, (int) chauffeurId, vehiculeId);
+        Livraison livraison = livraisionServices.assigner(
+                id,
+                (int) chauffeurId,
+                vehiculeId
+        );
+
         return livraisionMapper.toDTO(livraison);
     }
-
 
     @PutMapping("/{id}/statut")
     public LivraisionDTO updateStatut(
@@ -49,66 +53,83 @@ public class LivraisonsController {
             @RequestParam String statut) {
 
         Livraison livraison = livraisionServices.updateStatut(id, statut);
+
         return livraisionMapper.toDTO(livraison);
     }
 
-
     @GetMapping
-    public List<LivraisionDTO> list() {
+    public Page<LivraisionDTO> list(
+            @RequestParam int page,
+            @RequestParam int size) {
 
-        return livraisionServices.getAll()
-                .stream()
-                .map(livraisionMapper::toDTO)
-                .toList();
+        Pageable pageable = PageRequest.of(page, size);
+
+        return livraisionServices.getAll(pageable)
+                .map(livraisionMapper::toDTO);
     }
 
-
     @GetMapping("/getLivraisonByChauffeurDisponible")
-    public List<LivraisionDTO> getlivraisonByChauffeurDis() {
+    public Page<LivraisionDTO> getlivraisonByChauffeurDis(
+            @RequestParam int page,
+            @RequestParam int size) {
 
-        return livraisionServices.getLivraisonByChaffeurDisponible()
-                .stream()
-                .map(livraisionMapper::toDTO)
-                .toList();
+        Pageable pageable = PageRequest.of(page, size);
+
+        return livraisionServices
+                .getLivraisonByChaffeurDisponible(pageable)
+                .map(livraisionMapper::toDTO);
     }
 
     @GetMapping("/statut")
-    public List<LivraisionDTO> getbystatut(@RequestParam String statut) {
+    public Page<LivraisionDTO> getbystatut(
+            @RequestParam String statut,
+            @RequestParam int page,
+            @RequestParam int size) {
 
-        return livraisionServices.getbystatut(statut)
-                .stream()
-                .map(livraisionMapper::toDTO)
-                .toList();
+        Pageable pageable = PageRequest.of(page, size);
+
+        return livraisionServices
+                .getbystatut(statut, pageable)
+                .map(livraisionMapper::toDTO);
     }
-
 
     @GetMapping("/client")
-    public List<LivraisionDTO> findbyclientid(@RequestParam Long id) {
+    public Page<LivraisionDTO> findbyclientid(
+            @RequestParam Long id,
+            @RequestParam int page,
+            @RequestParam int size) {
 
-        return livraisionServices.findbyclientId(id)
-                .stream()
-                .map(livraisionMapper::toDTO)
-                .toList();
+        Pageable pageable = PageRequest.of(page, size);
+
+        return livraisionServices
+                .findbyclientId(id, pageable)
+                .map(livraisionMapper::toDTO);
     }
 
-
     @GetMapping("/dates")
-    public List<LivraisionDTO> findbetweendates(
+    public Page<LivraisionDTO> findbetweendates(
             @RequestParam LocalDate date1,
-            @RequestParam LocalDate date2) {
+            @RequestParam LocalDate date2,
+            @RequestParam int page,
+            @RequestParam int size) {
 
-        return livraisionServices.findbetweendates(date1, date2)
-                .stream()
-                .map(livraisionMapper::toDTO)
-                .toList();
+        Pageable pageable = PageRequest.of(page, size);
+
+        return livraisionServices
+                .findbetweendates(date1, date2, pageable)
+                .map(livraisionMapper::toDTO);
     }
 
     @GetMapping("/destination")
-    public List<LivraisionDTO> findbydestinationadress(@RequestParam String ville) {
+    public Page<LivraisionDTO> findbydestinationadress(
+            @RequestParam String ville,
+            @RequestParam int page,
+            @RequestParam int size) {
 
-        return livraisionServices.findbyadressedestination(ville)
-                .stream()
-                .map(livraisionMapper::toDTO)
-                .toList();
+        Pageable pageable = PageRequest.of(page, size);
+
+        return livraisionServices
+                .findbyadressedestination(ville, pageable)
+                .map(livraisionMapper::toDTO);
     }
 }

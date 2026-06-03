@@ -5,88 +5,30 @@ import com.example.FleetFlow.DTO.ChauffeurDTO;
 import com.example.FleetFlow.DTO.CreateChauffeurDTO;
 import com.example.FleetFlow.Mapper.ChauffeurMapper;
 import com.example.FleetFlow.models.Chauffeur;
-import com.example.FleetFlow.repositories.ChauffeurRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.core.support.RepositoryMethodInvocationListener;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
-
-@Service
-public class ChauffeurService {
+import org.springframework.data.domain.Page;
 
 
-    private final ChauffeurMapper mapper;
-    private final ChauffeurRepository chauffeurRepository;
-
-    public ChauffeurService(ChauffeurMapper mapper, ChauffeurRepository chauffeurRepository) {
-        this.mapper = mapper;
-        this.chauffeurRepository = chauffeurRepository;
-    }
-
-    public void ajouterChauffeur(CreateChauffeurDTO chauffeur){
-
-        chauffeurRepository.save(mapper.toEntity(chauffeur));
-    }
-
-    public void deleteChauffeur(int id){
-        chauffeurRepository.deleteById(id);
-    }
-
-    public List<ChauffeurDTO> displayChauffeurs(){
-       List<Chauffeur> chauffeurs = chauffeurRepository.findAll();
-        return chauffeurs
-                .stream()
-                .map((chauffeur)->{
-                    ChauffeurDTO dto = mapper.toDTO(chauffeur);
-                    dto.setNombreVehicules(chauffeur.getVichelList().size());
-                    dto.setNombreLivraisons(chauffeur.getLivraisonList().size());
-                    return dto;
-                })
-                .toList();
-    }
-
-    public Chauffeur updateChauffeur (int id, Chauffeur newData){
-        Chauffeur chauffeur = chauffeurRepository.findById(id).orElse(null);
-        if(chauffeur != null){
-            chauffeur.setNom(newData.getNom());
-            chauffeur.setPhone(newData.getPhone());
-            chauffeur.setIsDisponible(newData.getIsDisponible());
-            chauffeur.setPermisType(newData.getPermisType());
-            return chauffeurRepository.save(chauffeur);
-        }
-        return null;
-    }
-
-    public List<ChauffeurDTO> findByDisponibility(){
-        List<Chauffeur> chauffeurs = chauffeurRepository.findByIsDisponibleTrue();
-        return chauffeurs
-                .stream()
-                .map((chauffeur)->{
-                    ChauffeurDTO dto = mapper.toDTO(chauffeur);
-                    return dto;
-                }).toList();
-    }
+import org.springframework.data.domain.Pageable;
 
 
-    public List<ChauffeurDTO> findByPermisTypeDisponible(String permisType,Boolean isDisponible){
-        List<Chauffeur> chauffeurs = chauffeurRepository.findByPermisTypeAndIsDisponible(permisType,isDisponible);
-        return chauffeurs
-                .stream()
-                .map((chauffeur)->{
-                    ChauffeurDTO dto = mapper.toDTO(chauffeur);
-                    return dto;
-                }).toList();
-    }
+public interface ChauffeurService {
 
+    void ajouterChauffeur(CreateChauffeurDTO chauffeur);
 
-    public List<String> displayChauffeursByNom(){
-        List<Chauffeur> chauffeurs = chauffeurRepository.findAll();
-        return chauffeurs
-                .stream()
-                .map((chauffeur)->{
-                    ChauffeurDTO dto = mapper.toDTO(chauffeur);
-                    return dto.getNom();
-                }).toList();
-    }
+    void deleteChauffeur(int id);
+
+    Page<ChauffeurDTO> displayChauffeurs(org.springframework.data.domain.Pageable pageable);
+
+    Chauffeur updateChauffeur(int id, Chauffeur newData);
+
+    Page<ChauffeurDTO> findByDisponibility(Pageable pageable);
+
+    Page<ChauffeurDTO> findByPermisTypeDisponible(
+            String permisType,
+            Boolean isDisponible,
+            Pageable pageable
+    );
+
+    Page<String> displayChauffeursByNom(Pageable pageable);
 }
