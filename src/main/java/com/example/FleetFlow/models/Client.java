@@ -15,12 +15,8 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Client {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class Client extends UserEntity{
     private String nom;
-    private String email;
     private int age;
     private String phone;
     @OneToMany(mappedBy = "client")

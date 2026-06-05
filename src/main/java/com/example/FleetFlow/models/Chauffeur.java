@@ -15,10 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Chauffeur   {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+public class Chauffeur   extends UserEntity{
     private String nom;
     private String phone;
     private String permisType;

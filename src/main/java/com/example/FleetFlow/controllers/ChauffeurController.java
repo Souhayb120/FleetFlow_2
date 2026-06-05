@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,6 +25,7 @@ public class ChauffeurController {
     }
 
     @GetMapping
+
     public Page<ChauffeurDTO> displayChauffeurs(
             @RequestParam int page,
             @RequestParam int size
@@ -33,11 +35,13 @@ public class ChauffeurController {
     }
 
     @DeleteMapping("/{id}")
+
     public void deleteChauffeur(@PathVariable int id){
         chauffeurService.deleteChauffeur(id);
     }
 
     @PutMapping("/{id}")
+
     public Chauffeur updateChauffeur(
             @PathVariable int id,
             @RequestBody Chauffeur chauffeur
@@ -46,6 +50,7 @@ public class ChauffeurController {
     }
 
     @GetMapping("/chaffeursDisponible")
+
     public Page<ChauffeurDTO> findByIsDisponible(
             @RequestParam int page,
             @RequestParam int size
@@ -55,6 +60,7 @@ public class ChauffeurController {
     }
 
     @GetMapping("/{permisType}")
+
     public Page<ChauffeurDTO> displayChauffeurs(
             @PathVariable String permisType,
             @RequestParam Boolean isDisponible,
@@ -71,6 +77,7 @@ public class ChauffeurController {
     }
 
     @GetMapping("/displayChauffeurByNom")
+
     public Page<String> displayChauffeursByNom(
             @RequestParam int page,
             @RequestParam int size
