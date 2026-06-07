@@ -6,6 +6,7 @@ import com.example.FleetFlow.DTO.UserAuthRequest;
 import com.example.FleetFlow.models.*;
 import com.example.FleetFlow.repositories.AdminRepository;
 import com.example.FleetFlow.repositories.UserRepository;
+import org.hibernate.dialect.function.CaseLeastGreatestEmulation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,6 +25,7 @@ public class AuthService {
     @Autowired private PasswordEncoder passwordEncoder;
 
     public void register(UserAuthRequest request) {
+        Client client = new Client();
         Manager manager = new Manager();
         Admin admin = new Admin();
         Chauffeur chauffeur = new Chauffeur();
@@ -50,6 +52,15 @@ public class AuthService {
             manager.setPassword(passwordEncoder.encode(request.getPassword()));
             manager.setRole(request.getRole());
             userRepository.save(manager);
+        }else if(request.getRole().name().equals("CLIENT")){
+            client.setUserName(request.getUserName());
+            client.setNom(request.getNom());
+            client.setEmail(request.getEmail());
+            client.setPhone(request.getPhone());
+            client.setAge(request.getAge());
+            client.setPassword(passwordEncoder.encode(request.getPassword()));
+            client.setRole(request.getRole());
+            userRepository.save(client);
         }
 
 

@@ -18,6 +18,8 @@ public class UserAuthRequest {
     private String nom;
     private String permisType;
     private Boolean isDisponible;
+    private String phone;
+    private int age;
     @NotNull(message = "Email is mandatory")
     @Email
     private String email;

@@ -4,6 +4,7 @@ import com.example.FleetFlow.DTO.ClientDTO;
 import com.example.FleetFlow.DTO.CreateClientDTO;
 import com.example.FleetFlow.models.Client;
 import com.example.FleetFlow.services.ClientService;
+import com.example.FleetFlow.services.Impl.ClientServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class ClientController {
 
     @Autowired
-    private ClientService clientService;
+    private ClientServiceImpl clientService;
 
     @PostMapping
     public void saveClient(@Valid @RequestBody CreateClientDTO client){

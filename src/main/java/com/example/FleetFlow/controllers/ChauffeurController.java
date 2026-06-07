@@ -25,7 +25,6 @@ public class ChauffeurController {
     }
 
     @GetMapping
-
     public Page<ChauffeurDTO> displayChauffeurs(
             @RequestParam int page,
             @RequestParam int size
