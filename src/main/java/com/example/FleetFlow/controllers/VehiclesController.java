@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,11 +23,13 @@ public class VehiclesController {
     private VehiculeMapper vehiculeMapper;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public Vehicule ajouterVehucle(@RequestBody @Valid VehiculeDTO v){
         return vehculeService.ajouterVehicule(v);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public VehiculeDTO modifierVehicule(
             @PathVariable Long id,
             @RequestBody VehiculeDTO dto
@@ -38,11 +41,13 @@ public class VehiclesController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void supprimer(@PathVariable long id){
         vehculeService.supprimerVehicule(id);
     }
 
     @GetMapping("/disponiblesVehicules")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public Page<VehiculeDTO> vehicules(
             @RequestParam int page,
             @RequestParam int size
@@ -53,6 +58,7 @@ public class VehiclesController {
     }
 
     @GetMapping("/statut")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public Page<Vehicule> findbystatut(
             @RequestParam String statut,
             @RequestParam int page,
@@ -67,6 +73,7 @@ public class VehiclesController {
     }
 
     @GetMapping("/capacity")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public Page<Vehicule> findGreaterCapacitythan(
             @RequestParam int capacity,
             @RequestParam int page,

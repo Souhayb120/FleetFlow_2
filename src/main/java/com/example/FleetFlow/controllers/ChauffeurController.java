@@ -20,11 +20,13 @@ public class ChauffeurController {
     private ChauffeurService chauffeurService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public void saveChauffeur(@Valid @RequestBody CreateChauffeurDTO chauffeur){
         chauffeurService.ajouterChauffeur(chauffeur);
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public Page<ChauffeurDTO> displayChauffeurs(
             @RequestParam int page,
             @RequestParam int size
@@ -34,13 +36,13 @@ public class ChauffeurController {
     }
 
     @DeleteMapping("/{id}")
-
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public void deleteChauffeur(@PathVariable int id){
         chauffeurService.deleteChauffeur(id);
     }
 
     @PutMapping("/{id}")
-
+    @PreAuthorize("hasRole('ADMIN')")
     public Chauffeur updateChauffeur(
             @PathVariable int id,
             @RequestBody Chauffeur chauffeur
@@ -49,7 +51,7 @@ public class ChauffeurController {
     }
 
     @GetMapping("/chaffeursDisponible")
-
+    @PreAuthorize("hasRole('ADMIN')")
     public Page<ChauffeurDTO> findByIsDisponible(
             @RequestParam int page,
             @RequestParam int size
@@ -59,7 +61,7 @@ public class ChauffeurController {
     }
 
     @GetMapping("/{permisType}")
-
+    @PreAuthorize("hasRole('ADMIN')")
     public Page<ChauffeurDTO> displayChauffeurs(
             @PathVariable String permisType,
             @RequestParam Boolean isDisponible,
@@ -76,13 +78,12 @@ public class ChauffeurController {
     }
 
     @GetMapping("/displayChauffeurByNom")
-
+    @PreAuthorize("hasRole('ADMIN')")
     public Page<String> displayChauffeursByNom(
             @RequestParam int page,
             @RequestParam int size
     ){
         Pageable pageable = PageRequest.of(page, size);
-
         return chauffeurService.displayChauffeursByNom(pageable);
     }
 }

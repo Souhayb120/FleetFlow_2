@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -24,6 +25,7 @@ public class LivraisonsController {
     private LivraisionMapper livraisionMapper;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public LivraisionDTO creatLivraision(@RequestBody @Valid LivraisionDTO dto) {
 
         Livraison livraison = livraisionMapper.toEntity(dto);
@@ -33,6 +35,7 @@ public class LivraisonsController {
     }
 
     @PutMapping("/{id}/assign")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public LivraisionDTO assign(
             @PathVariable long id,
             @RequestParam long chauffeurId,
@@ -48,6 +51,7 @@ public class LivraisonsController {
     }
 
     @PutMapping("/{id}/statut")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public LivraisionDTO updateStatut(
             @PathVariable Long id,
             @RequestParam String statut) {
@@ -58,6 +62,7 @@ public class LivraisonsController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public Page<LivraisionDTO> list(
             @RequestParam int page,
             @RequestParam int size) {
@@ -69,6 +74,7 @@ public class LivraisonsController {
     }
 
     @GetMapping("/getLivraisonByChauffeurDisponible")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public Page<LivraisionDTO> getlivraisonByChauffeurDis(
             @RequestParam int page,
             @RequestParam int size) {
@@ -81,6 +87,7 @@ public class LivraisonsController {
     }
 
     @GetMapping("/statut")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public Page<LivraisionDTO> getbystatut(
             @RequestParam String statut,
             @RequestParam int page,
@@ -94,6 +101,7 @@ public class LivraisonsController {
     }
 
     @GetMapping("/client")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public Page<LivraisionDTO> findbyclientid(
             @RequestParam Long id,
             @RequestParam int page,
@@ -107,6 +115,7 @@ public class LivraisonsController {
     }
 
     @GetMapping("/dates")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public Page<LivraisionDTO> findbetweendates(
             @RequestParam LocalDate date1,
             @RequestParam LocalDate date2,
@@ -121,6 +130,7 @@ public class LivraisonsController {
     }
 
     @GetMapping("/destination")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public Page<LivraisionDTO> findbydestinationadress(
             @RequestParam String ville,
             @RequestParam int page,
