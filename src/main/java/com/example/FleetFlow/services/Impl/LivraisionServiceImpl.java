@@ -1,5 +1,7 @@
 package com.example.FleetFlow.services.Impl;
 
+import com.example.FleetFlow.DTO.LivraisionDTO;
+import com.example.FleetFlow.Mapper.LivraisionMapper;
 import com.example.FleetFlow.models.Chauffeur;
 import com.example.FleetFlow.models.Livraison;
 import com.example.FleetFlow.models.Vehicule;
@@ -7,28 +9,30 @@ import com.example.FleetFlow.repositories.ChauffeurRepository;
 import com.example.FleetFlow.repositories.LivraisonRepository;
 import com.example.FleetFlow.repositories.VehculeRepository;
 import com.example.FleetFlow.services.LivraisionService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
+
 @Service
 public class LivraisionServiceImpl implements LivraisionService {
 
     private final LivraisonRepository livraisionRepository;
     private final ChauffeurRepository chauffeurRepository;
     private final VehculeRepository vehiculeRepository;
+    private final LivraisionMapper livraisionMapper;
 
     public LivraisionServiceImpl(
             LivraisonRepository livraisionRepository,
             ChauffeurRepository chauffeurRepository,
-            VehculeRepository vehiculeRepository
+            VehculeRepository vehiculeRepository, LivraisionMapper livraisionMapper
     ) {
         this.livraisionRepository = livraisionRepository;
         this.chauffeurRepository = chauffeurRepository;
         this.vehiculeRepository = vehiculeRepository;
+        this.livraisionMapper = livraisionMapper;
     }
 
     @Override
@@ -127,6 +131,24 @@ public class LivraisionServiceImpl implements LivraisionService {
     ) {
         return livraisionRepository
                 .findByChauffeurIsDisponibleTrue(pageable);
+    }
+
+
+
+    @Override
+    public Page<LivraisionDTO> findLivraisonByChaffeur(long id, int page, int size) {
+        Pageable p = PageRequest.of(page, size);
+        Page<LivraisionDTO> livraisionDTOS = livraisionRepository.findByChauffeur_Id(id,p).map((livraison -> {LivraisionDTO l = livraisionMapper.toDTO(livraison);
+            return l;
+        }));
+        return livraisionDTOS;
+    }
+
+    @Override
+    public void editLivraisonStatutByChauffeur(long id, String statut) {
+        Livraison livraison = livraisionRepository.findLivraisonsById(id);
+        livraison.setStatut(statut);
+        livraisionRepository.save(livraison);
     }
 
 

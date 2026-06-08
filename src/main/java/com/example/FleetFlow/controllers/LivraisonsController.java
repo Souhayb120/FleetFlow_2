@@ -142,4 +142,26 @@ public class LivraisonsController {
                 .findbyadressedestination(ville, pageable)
                 .map(livraisionMapper::toDTO);
     }
+
+
+    @GetMapping("/meLivraision")
+    @PreAuthorize("hasAnyRole('ADMIN','CHAUFFEUR')")
+    public Page<LivraisionDTO> findlivraisonByChaffeur(
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam int id) {
+        Page<LivraisionDTO> dtos = livraisionServices.findLivraisonByChaffeur(id,page,size);
+        return  dtos;
+    }
+
+
+    @PatchMapping("/editLivraisonStatutByChaffeur")
+    public void editLivraisonStatut(
+            @RequestParam long id,
+            @RequestParam String statut
+    ){
+        livraisionServices.editLivraisonStatutByChauffeur(id,statut);
+    }
+
+
 }

@@ -1,5 +1,6 @@
 package com.example.FleetFlow.services;
 
+import com.example.FleetFlow.DTO.LivraisionDTO;
 import com.example.FleetFlow.models.Livraison;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,4 +35,7 @@ public interface LivraisionService {
     Page<Livraison> getLivraisonByChaffeurDisponible(
             Pageable pageable
     );
-}
+
+
+    Page<LivraisionDTO> findLivraisonByChaffeur(long id, int page, int size);
+    void editLivraisonStatutByChauffeur(long id , String statut);}

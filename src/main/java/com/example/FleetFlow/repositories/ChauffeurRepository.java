@@ -2,6 +2,7 @@ package com.example.FleetFlow.repositories;
 
 import com.example.FleetFlow.DTO.ChauffeurDTO;
 import com.example.FleetFlow.models.Chauffeur;
+import com.example.FleetFlow.models.Livraison;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -18,4 +19,5 @@ public interface ChauffeurRepository extends JpaRepository<Chauffeur, Integer> {
             Boolean isDisponible,
             Pageable pageable
     );
+
 }
