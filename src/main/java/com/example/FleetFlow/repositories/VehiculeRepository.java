@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface VehculeRepository extends JpaRepository<Vehicule, Long> {
+public interface VehiculeRepository extends JpaRepository<Vehicule, Long> {
 
     Page<Vehicule> findByStatut(String statut, Pageable pageable);
 

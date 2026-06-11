@@ -4,6 +4,7 @@ import com.example.FleetFlow.DTO.VehiculeDTO;
 import com.example.FleetFlow.Mapper.VehiculeMapper;
 import com.example.FleetFlow.models.Vehicule;
 import com.example.FleetFlow.services.Impl.VehiculeServiceImpl;
+import com.example.FleetFlow.services.VehiculeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class VehiclesController {
 
     @Autowired
-    private VehiculeServiceImpl vehculeService;
+    private VehiculeService vehculeService;
 
     @Autowired
     private VehiculeMapper vehiculeMapper;

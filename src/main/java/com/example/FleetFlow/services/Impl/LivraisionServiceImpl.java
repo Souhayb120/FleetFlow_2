@@ -7,7 +7,7 @@ import com.example.FleetFlow.models.Livraison;
 import com.example.FleetFlow.models.Vehicule;
 import com.example.FleetFlow.repositories.ChauffeurRepository;
 import com.example.FleetFlow.repositories.LivraisonRepository;
-import com.example.FleetFlow.repositories.VehculeRepository;
+import com.example.FleetFlow.repositories.VehiculeRepository;
 import com.example.FleetFlow.services.LivraisionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,17 +19,17 @@ import java.time.LocalDate;
 @Service
 public class LivraisionServiceImpl implements LivraisionService {
 
-    private final LivraisonRepository livraisionRepository;
+    private final LivraisonRepository livraisonRepository;
     private final ChauffeurRepository chauffeurRepository;
-    private final VehculeRepository vehiculeRepository;
+    private final VehiculeRepository vehiculeRepository;
     private final LivraisionMapper livraisionMapper;
 
     public LivraisionServiceImpl(
-            LivraisonRepository livraisionRepository,
+            LivraisonRepository livraisonRepository,
             ChauffeurRepository chauffeurRepository,
-            VehculeRepository vehiculeRepository, LivraisionMapper livraisionMapper
+            VehiculeRepository vehiculeRepository, LivraisionMapper livraisionMapper
     ) {
-        this.livraisionRepository = livraisionRepository;
+        this.livraisonRepository = livraisonRepository;
         this.chauffeurRepository = chauffeurRepository;
         this.vehiculeRepository = vehiculeRepository;
         this.livraisionMapper = livraisionMapper;
@@ -38,7 +38,7 @@ public class LivraisionServiceImpl implements LivraisionService {
     @Override
     public Livraison creeLivraision(Livraison l) {
         l.setStatut("EN_ATTENTE");
-        return livraisionRepository.save(l);
+        return livraisonRepository.save(l);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class LivraisionServiceImpl implements LivraisionService {
             Long vehiculeId
     ) {
 
-        Livraison livraison = livraisionRepository.findById(livraisonId)
+        Livraison livraison = livraisonRepository.findById(livraisonId)
                 .orElseThrow(() -> new RuntimeException("Livraison not found"));
 
         Chauffeur chauffeur = chauffeurRepository.findById(chauffeurId)
@@ -64,25 +64,25 @@ public class LivraisionServiceImpl implements LivraisionService {
         livraison.setChauffeur(chauffeur);
         livraison.setVehicule(vehicule);
 
-        return livraisionRepository.save(livraison);
+        return livraisonRepository.save(livraison);
     }
 
     @Override
     public Livraison updateStatut(Long id, String statut) {
 
-        Livraison livraison = livraisionRepository.findById(id)
+        Livraison livraison = livraisonRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Livraison not found"));
 
         livraison.setStatut(statut);
 
-        return livraisionRepository.save(livraison);
+        return livraisonRepository.save(livraison);
     }
 
 
 
     @Override
     public Page<Livraison> getAll(Pageable pageable) {
-        return livraisionRepository.findAll(pageable);
+        return livraisonRepository.findAll(pageable);
     }
 
     @Override
@@ -90,7 +90,7 @@ public class LivraisionServiceImpl implements LivraisionService {
             String statut,
             Pageable pageable
     ) {
-        return livraisionRepository.findByStatut(statut, pageable);
+        return livraisonRepository.findByStatut(statut, pageable);
     }
 
     @Override
@@ -98,7 +98,7 @@ public class LivraisionServiceImpl implements LivraisionService {
             Long id,
             Pageable pageable
     ) {
-        return livraisionRepository.findByClientId(id, pageable);
+        return livraisonRepository.findByClientId(id, pageable);
     }
 
     @Override
@@ -107,7 +107,7 @@ public class LivraisionServiceImpl implements LivraisionService {
             LocalDate date2,
             Pageable pageable
     ) {
-        return livraisionRepository.findBetweenDates(
+        return livraisonRepository.findBetweenDates(
                 date1,
                 date2,
                 pageable
@@ -119,7 +119,7 @@ public class LivraisionServiceImpl implements LivraisionService {
             String ville,
             Pageable pageable
     ) {
-        return livraisionRepository.findByAdresseDestination(
+        return livraisonRepository.findByAdresseDestination(
                 ville,
                 pageable
         );
@@ -129,7 +129,7 @@ public class LivraisionServiceImpl implements LivraisionService {
     public Page<Livraison> getLivraisonByChaffeurDisponible(
             Pageable pageable
     ) {
-        return livraisionRepository
+        return livraisonRepository
                 .findByChauffeurIsDisponibleTrue(pageable);
     }
 
@@ -138,7 +138,7 @@ public class LivraisionServiceImpl implements LivraisionService {
     @Override
     public Page<LivraisionDTO> findLivraisonByChaffeur(long id, int page, int size) {
         Pageable p = PageRequest.of(page, size);
-        Page<LivraisionDTO> livraisionDTOS = livraisionRepository.findByChauffeur_Id(id,p).map((livraison -> {LivraisionDTO l = livraisionMapper.toDTO(livraison);
+        Page<LivraisionDTO> livraisionDTOS = livraisonRepository.findByChauffeur_Id(id,p).map((livraison -> {LivraisionDTO l = livraisionMapper.toDTO(livraison);
             return l;
         }));
         return livraisionDTOS;
@@ -146,9 +146,9 @@ public class LivraisionServiceImpl implements LivraisionService {
 
     @Override
     public void editLivraisonStatutByChauffeur(long id, String statut) {
-        Livraison livraison = livraisionRepository.findLivraisonsById(id);
+        Livraison livraison = livraisonRepository.findLivraisonsById(id);
         livraison.setStatut(statut);
-        livraisionRepository.save(livraison);
+        livraisonRepository.save(livraison);
     }
 
 

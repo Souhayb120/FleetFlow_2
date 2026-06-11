@@ -4,7 +4,7 @@ package com.example.FleetFlow.services.Impl;
 import com.example.FleetFlow.DTO.VehiculeDTO;
 import com.example.FleetFlow.Mapper.VehiculeMapper;
 import com.example.FleetFlow.models.Vehicule;
-import com.example.FleetFlow.repositories.VehculeRepository;
+import com.example.FleetFlow.repositories.VehiculeRepository;
 import com.example.FleetFlow.services.VehiculeService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,21 +13,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class VehiculeServiceImpl implements VehiculeService {
 
-    private final VehculeRepository vehculeRepository;
+    private final VehiculeRepository vehiculeRepository;
     private final VehiculeMapper vehiculeMapper;
 
     public VehiculeServiceImpl(
-            VehculeRepository vehculeRepository,
+            VehiculeRepository vehiculeRepository,
             VehiculeMapper vehiculeMapper
     ) {
-        this.vehculeRepository = vehculeRepository;
+        this.vehiculeRepository = vehiculeRepository;
         this.vehiculeMapper = vehiculeMapper;
     }
 
     @Override
     public Vehicule ajouterVehicule(VehiculeDTO vehiculeDTO) {
 
-        return vehculeRepository.save(
+        return vehiculeRepository.save(
                 vehiculeMapper.toEntity(vehiculeDTO)
         );
     }
@@ -35,7 +35,7 @@ public class VehiculeServiceImpl implements VehiculeService {
     @Override
     public Vehicule modifierVehicule(Long id, Vehicule vehicule) {
 
-        Vehicule existingVehicule = vehculeRepository.findById(id)
+        Vehicule existingVehicule = vehiculeRepository.findById(id)
                 .orElseThrow(() ->
                         new RuntimeException("Vehicule not found"));
 
@@ -44,23 +44,23 @@ public class VehiculeServiceImpl implements VehiculeService {
         existingVehicule.setCapacite(vehicule.getCapacite());
         existingVehicule.setStatut(vehicule.getStatut());
 
-        return vehculeRepository.save(existingVehicule);
+        return vehiculeRepository.save(existingVehicule);
     }
 
     @Override
     public void supprimerVehicule(Long id) {
 
-        if (!vehculeRepository.existsById(id)) {
+        if (!vehiculeRepository.existsById(id)) {
             throw new RuntimeException("Vehicule not found");
         }
 
-        vehculeRepository.deleteById(id);
+        vehiculeRepository.deleteById(id);
     }
 
     @Override
     public Page<VehiculeDTO> listerVehicule(Pageable pageable) {
 
-        return vehculeRepository.findAll(pageable)
+        return vehiculeRepository.findAll(pageable)
                 .map(vehiculeMapper::toDTO);
     }
 
@@ -69,7 +69,7 @@ public class VehiculeServiceImpl implements VehiculeService {
             String statut,
             Pageable pageable
     ) {
-        return vehculeRepository.findByStatut(
+        return vehiculeRepository.findByStatut(
                 statut,
                 pageable
         );
@@ -80,7 +80,7 @@ public class VehiculeServiceImpl implements VehiculeService {
             int capacity,
             Pageable pageable
     ) {
-        return vehculeRepository.findByCapaciteGreaterThan(
+        return vehiculeRepository.findByCapaciteGreaterThan(
                 capacity,
                 pageable
         );

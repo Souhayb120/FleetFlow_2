@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class ClientController {
 
     @Autowired
-    private ClientServiceImpl clientService;
+    private ClientService clientService;
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
@@ -29,11 +29,8 @@ public class ClientController {
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public Page<ClientDTO> displayClients(
-            @RequestParam int page,
-            @RequestParam int size
+            @RequestParam Pageable pageable
     ){
-        Pageable pageable = PageRequest.of(page, size);
-
         return clientService.afficherClients(pageable);
     }
 

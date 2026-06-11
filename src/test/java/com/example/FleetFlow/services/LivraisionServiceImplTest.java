@@ -1,92 +1,83 @@
-    package com.example.FleetFlow.services;
+package com.example.FleetFlow.services;
 
-    import com.example.FleetFlow.models.Chauffeur;
-    import com.example.FleetFlow.models.Livraison;
-    import com.example.FleetFlow.models.Vehicule;
-    import com.example.FleetFlow.repositories.ChauffeurRepository;
-    import com.example.FleetFlow.repositories.LivraisonRepository;
-    import com.example.FleetFlow.repositories.VehculeRepository;
-    import org.junit.jupiter.api.Test;
-    import org.junit.jupiter.api.extension.ExtendWith;
-    import org.mockito.InjectMocks;
-    import org.mockito.Mock;
-    import org.mockito.junit.jupiter.MockitoExtension;
+import com.example.FleetFlow.models.Chauffeur;
+import com.example.FleetFlow.models.Livraison;
+import com.example.FleetFlow.models.Vehicule;
+import com.example.FleetFlow.repositories.ChauffeurRepository;
+import com.example.FleetFlow.repositories.LivraisonRepository;
+import com.example.FleetFlow.repositories.VehiculeRepository;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
-    import java.util.Optional;
+import static org.junit.jupiter.api.Assertions.*;
 
-    import static org.junit.jupiter.api.Assertions.assertEquals;
-    import static org.junit.jupiter.api.Assertions.assertFalse;
-    import static org.mockito.Mockito.when;
-    @ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@Transactional
+public class LivraisionServiceImplTest {
 
-    public class LivraisionServiceImplTest {
-        @Mock
-        private LivraisonRepository livraisonRepository;
-        @Mock
-        private ChauffeurRepository chauffeurRepository;
-        @Mock
-        private VehculeRepository vehculeRepository;
+    @Autowired
+    private LivraisionService livraisionService;
 
-        @InjectMocks
-        private LivraisionService livraisionService;
+    @Autowired
+    private LivraisonRepository livraisonRepository;
 
+    @Autowired
+    private ChauffeurRepository chauffeurRepository;
 
-        @Test
-        void shouldCreateLivraisonWithInitialStatus(){
+    @Autowired
+    private VehiculeRepository vehiculeRepository;
 
-            Livraison livraison = new Livraison();
-
-            livraisionService.creeLivraision(livraison);
-
-            assertEquals("EN_ATTENTE",livraison.getStatut());;
-        }
-        @Test
-        void shouldAAssignerChauffeurVehiculeAuneLivraison(){
-            //GIVEN
-            long livraisionID= 3;
-            int chauffeurID=2;
-            long vehiculeID= 3;
-            Livraison livraison = new Livraison();
-            Chauffeur chauffeur =new Chauffeur();
-            Vehicule vehicule = new Vehicule();
-
-            when(livraisonRepository.findById(livraisionID)).thenReturn(Optional.of(livraison));
-            when(chauffeurRepository.findById(chauffeurID)).thenReturn(Optional.of(chauffeur));
-            when(vehculeRepository.findById(vehiculeID)).thenReturn(Optional.of(vehicule));
-            when(livraisonRepository.save(livraison)).thenReturn(livraison);
-            //WHEN
-            Livraison rs = livraisionService.assigner(livraisionID,chauffeurID,vehiculeID);
-
-            //THEN
-            assertEquals(chauffeur,rs.getChauffeur());
-            assertEquals(vehicule,rs.getVehicule());
-
-            assertEquals("ENCOURS",rs.getStatut());
-            assertEquals("Occuppier",vehicule.getStatut());
-
-            assertFalse(chauffeur.getIsDisponible());
-        }
-
-        @Test
-        void shouldUpdateLivraisonStatus() {
-
-            // GIVEN
-            Long id = 1L;
-            Livraison livraison = new Livraison();
-            livraison.setStatut("EN_ATTENTE");
-
-            String newStatut = "ENCOURS";
-
-            when(livraisonRepository.findById(id))
-                    .thenReturn(Optional.of(livraison));
-
-            when(livraisonRepository.save(livraison))
-                    .thenReturn(livraison);
-
-            // WHEN
-            Livraison rs = livraisionService.updateStatut(id, newStatut);
-
-            // THEN
-            assertEquals(newStatut, rs.getStatut());
-        }
+    @Test
+    void shouldCreateLivraisonWithInitialStatus() {
+        Livraison livraison = new Livraison();
+        livraisionService.creeLivraision(livraison);
+        assertEquals("EN_ATTENTE", livraison.getStatut());
     }
+
+    @Test
+    void shouldAAssignerChauffeurVehiculeAuneLivraison() {
+        // GIVEN
+        Livraison livraison = new Livraison();
+        livraison = livraisonRepository.save(livraison);
+        
+        Chauffeur chauffeur = new Chauffeur();
+        chauffeur.setNom("Driver");
+        chauffeur.setIsDisponible(true);
+        chauffeur = chauffeurRepository.save(chauffeur);
+        
+        Vehicule vehicule = new Vehicule();
+        vehicule.setMatricule("V123");
+        vehicule.setStatut("Disponible");
+        vehicule = vehiculeRepository.save(vehicule);
+
+        // WHEN
+        Livraison rs = livraisionService.assigner(livraison.getId(), (int) chauffeur.getId(), vehicule.getId());
+
+        // THEN
+        assertNotNull(rs.getChauffeur());
+        assertEquals(chauffeur.getId(), rs.getChauffeur().getId());
+        assertNotNull(rs.getVehicule());
+        assertEquals(vehicule.getId(), rs.getVehicule().getId());
+        assertEquals("ENCOURS", rs.getStatut());
+        assertEquals("Occuppier", rs.getVehicule().getStatut());
+        assertFalse(rs.getChauffeur().getIsDisponible());
+    }
+
+    @Test
+    void shouldUpdateLivraisonStatus() {
+        // GIVEN
+        Livraison livraison = new Livraison();
+        livraison.setStatut("EN_ATTENTE");
+        livraison = livraisonRepository.save(livraison);
+
+        String newStatut = "ENCOURS";
+
+        // WHEN
+        Livraison rs = livraisionService.updateStatut(livraison.getId(), newStatut);
+
+        // THEN
+        assertEquals(newStatut, rs.getStatut());
+    }
+}
